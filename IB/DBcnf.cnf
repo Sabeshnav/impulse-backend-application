@@ -1,0 +1,4 @@
+database = ImpulseDB
+user = devSAB
+password = devSAB231299
+default-character-set = utf8
