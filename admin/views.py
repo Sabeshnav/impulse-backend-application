@@ -56,7 +56,7 @@ class Student(View, Baseview, Tables):
         self.json_update("class", "students", str(user_id), "(id = \"" + str(class_id) + "\")")
         if check == 0:
             return HttpResponse(self.update(
-                "class_id = \"" + str(class_id) + "\", password = \"" + password + "\", token = \"" + token + "\"",
+                "class_id = \"" + str(class_id) + "\", password = \"" + str(password) + "\", token = \"" + str(token) + "\"",
                 "users", "(username = \"" + username + "\")"), status=200)
         else:
             return HttpResponse("Student already added to the class!", status=409)

@@ -117,6 +117,29 @@ class Baseview():
         cnx.close()
         return "done"
 
+    def json_edit(self, table, column, value, condition):
+        cnx = self.dbs.getConnection()
+        cursor = self.dbs.getCursor(cnx=cnx)
+        search_query = ("SELECT " + column + " FROM " + table + " WHERE " + condition)
+        print(search_query)
+        cursor.execute(search_query)
+        res = cursor.fetchall()
+        res = res[0][0]
+        res = json.loads(str(res))
+        print(res)
+        lis = res[column]
+        if lis:
+            lis = value
+            update_query = ("UPDATE " + table + " SET " + column + " = JSON_SET(" + column + ", '$." + column + "', " + "'" + lis + "') WHERE " + condition)
+        else:
+            lis = value
+            update_query = ("UPDATE " + table + " SET " + column + " = JSON_SET(" + column + ", '$." + column + "', " + "'" + lis + "') WHERE " + condition)
+        cursor.execute(update_query)
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+        return "done"
+
     def is_exists(self, table, column, condition):
         cnx = self.dbs.getConnection()
         cursor = self.dbs.getCursor(cnx=cnx)
