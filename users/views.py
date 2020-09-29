@@ -67,13 +67,13 @@ class UserDetails(View, Baseview, Tables):
 class GeneralPosts(View, Baseview):
 
     # get posts
-    def get(self, request):
+    def get(self, request, category):
         messages = []
         img_urls = []
         doc_url = []
         date_times = []
         modes = []
-        content = self.retrieve_all("general_post ORDER BY id DESC")
+        content = self.retrieve_all("general_post WHERE (category = " + str(category) + ")ORDER BY id DESC")
         for i in content:
             o = {}
             o = json.loads(str(i[5]))
@@ -211,6 +211,7 @@ class MCQTestAttend(Baseview, View):
         result = {}
         test_id = request.headers['testid']
         test_details = self.retrieve("*", "test", "(id = \"" + test_id + "\")")
+        time = str(test_details[0][8])
         test_name = str(test_details[0][1])
         question_ids = test_details[0][5]
         question_ids = json.loads(question_ids)
@@ -258,6 +259,7 @@ class MCQTestAttend(Baseview, View):
                 qn = "q"+str(qNumber)
                 result[str(qn)] = res
         result['numbers'] = qNumber
+        result['time'] = time
         print(str(result))
         return JsonResponse(result, status=200)
 

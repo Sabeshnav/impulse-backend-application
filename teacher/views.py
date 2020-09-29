@@ -156,9 +156,10 @@ class GeneralPost(Baseview, View):
     # check existence of doc
     def get(self, request, filename):
         token = request.headers['token']
+        category = request.headers['category']
         file_name = filename
         if self.retrieve("*", "teacher", "(token = \"" + token + "\")"):
-            file = self.retrieve("*", "general_doc", "(name = \"" + file_name + "\")")
+            file = self.retrieve("*", "general_doc", "(name = \"" + file_name + "\" AND category = " + str(category) + ")")
             if file:
                 return HttpResponse("File already exists!!", status=403)
             else:
@@ -174,16 +175,18 @@ class GeneralPost(Baseview, View):
         img_urls = data['img_urls']
         doc_url = data['doc_url']
         message = data['message']
+        category = data['category']
         if self.retrieve("*", "teacher", "(token = \"" + token + "\")"):
-            return self.insert("general_post", "(teacher_id, img_urls, doc_url, message, date_time)", "(\"" + str(teacher_id) + "\", '{\"img_urls\": \"" + img_urls + "\"}', '{\"doc_url\": \"" + doc_url + "\"}', '{\"message\": \"" + message + "\"}', now())")
+            return self.insert("general_post", "(teacher_id, img_urls, doc_url, message, date_time, category)", "(\"" + str(teacher_id) + "\", '{\"img_urls\": \"" + img_urls + "\"}', '{\"doc_url\": \"" + doc_url + "\"}', '{\"message\": \"" + message + "\"}', now(), \"  " + str(category) + " \")")
         else:
             return HttpResponse("Un-authenticated user!", status=403)
 
     # save a doc name
     def put(self, request, filename):
         token = request.headers['token']
+        category = request.headers['category']
         if self.retrieve("*", "teacher", "(token = \"" + token + "\")"):
-            return self.insert("general_doc", "(name)", "(\"" + filename + "\")")
+            return self.insert("general_doc", "(name, category)", "(\"" + filename + "\", \"  " + str(category) + " \")")
         else:
             return HttpResponse("Un-authenticated user!", status=403)
 
@@ -480,6 +483,8 @@ class MakeLive(Baseview, View):
     def post(self, request):
         data = bodyParser(request)
         test_id = data['test_id']
+        test_duration = data['test_duration']
+        self.update("time = \"" + str(test_duration) + "\"", "test", "(id = \"" + str(test_id) + "\")")
         return HttpResponse(self.update("live = \"1\"", "test", "(id = \"" + str(test_id) + "\")"), status=200)
 
 
