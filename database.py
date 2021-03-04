@@ -10,7 +10,7 @@ class Database():
 
 
     def getConnection(self):
-        cnx = mysql.connector.connect(user='root', password='SAvitricatkannan12!@', host='127.0.0.1', database='ImpulseDB')
+        cnx = mysql.connector.connect(user='root', password='Sabesh', host='127.0.0.1', database='ImpulseDB')
         return cnx
     def getCursor(self, cnx):
         cursor = cnx.cursor()
